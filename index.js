@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
 })
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.bnqcs.mongodb.net/?appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -38,6 +38,77 @@ async function run() {
      
      const database = client.db("businessDashboardDB");
      const usercollection = database.collection("users");
+     const revenuecollection = database.collection("revenue");
+
+
+
+     app.patch("/revenue/:id",async(req,res)=>{
+
+        let updateRevenueData=req.body
+
+        console.log(updateRevenueData)
+        let idx=req.params.idx
+        console.log(idx)
+
+
+        let filter={_id:new ObjectId(idx)}
+
+        const updateDoc = {
+            $set: {
+              month:updateRevenueData.month,
+              income:updateRevenueData.income,
+              expense:updateRevenueData.expense
+            },
+          };
+
+          const result = await revenuecollection.updateOne(filter, updateDoc);
+
+          res.send(result)
+
+
+     })
+
+
+     app.get("/revenue/:id",async(req,res)=>{
+
+        let idx=req.params.id
+
+        let filter={_id:new ObjectId(idx)}
+
+        let result= await revenuecollection.findOne(filter)
+        res.send(result)
+     })
+
+
+
+     app.delete("/revenue/:id",async(req,res)=>{
+
+
+        let idx=req.params.id
+
+        let query={_id: new ObjectId(idx)}
+
+        let result=await revenuecollection.deleteOne(query)
+
+        res.send(result)
+     })
+
+
+    app.get("/revenue",async(req,res)=>{
+
+
+        let result= await revenuecollection.find().toArray()
+        res.send(result)
+    })
+     app.post("/revenue",async(req,res)=>{
+
+        let revenueData=req.body
+
+        const result = await revenuecollection.insertOne(revenueData);
+        res.send(result)
+
+      })
+
 
 
 
@@ -57,6 +128,48 @@ async function run() {
         res.send({ admin })
   
   
+      })
+
+      app.delete("/users/:id",async(req,res)=>{
+
+        let idx=req.params.id
+
+        let query={_id: new ObjectId(idx)}
+
+        let result=await usercollection.deleteOne(query)
+
+        res.send(result)
+
+      })
+
+
+      app.patch("/users/:id",async(req,res)=>{
+
+        let {role}=req.body
+        console.log(role)
+
+        let idx=req.params.id
+        let filter={_id:new ObjectId(idx)}
+
+
+        const updateDoc = {
+            $set: {
+              role:role
+            },
+          };
+
+          const result = await usercollection.updateOne(filter, updateDoc);
+
+          res.send(result)
+
+
+
+      })
+
+      app.get("/users",async(req,res)=>{
+
+        let result=await usercollection.find().toArray()
+        res.send(result)
       })
 
 
@@ -95,6 +208,10 @@ async function run() {
         res.send(result)
       })
 
+
+
+
+     
 
 
 
