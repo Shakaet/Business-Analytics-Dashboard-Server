@@ -39,6 +39,7 @@ async function run() {
      const database = client.db("businessDashboardDB");
      const usercollection = database.collection("users");
      const revenuecollection = database.collection("revenue");
+     const transectioncollection = database.collection("transection");
 
 
 
@@ -46,9 +47,9 @@ async function run() {
 
         let updateRevenueData=req.body
 
-        console.log(updateRevenueData)
+        // console.log(updateRevenueData)
         let idx=req.params.idx
-        console.log(idx)
+        // console.log(idx)
 
 
         let filter={_id:new ObjectId(idx)}
@@ -93,6 +94,13 @@ async function run() {
         res.send(result)
      })
 
+     app.get("/alltransection",async(req,res)=>{
+
+
+        let result= await transectioncollection.find().toArray()
+        res.send(result)
+    })
+
 
     app.get("/revenue",async(req,res)=>{
 
@@ -130,6 +138,66 @@ async function run() {
   
       })
 
+
+      app.delete("/tansection/:id",async(req,res)=>{
+
+        let idx=req.params.id
+
+        let query={_id: new ObjectId(idx)}
+
+        let result=await transectioncollection.deleteOne(query)
+
+        res.send(result)
+
+
+      })
+
+      app.patch("/transactions/:id",async(req,res)=>{
+
+        let {status}=req.body
+        
+
+        let idx=req.params.id
+        let filter={_id:new ObjectId(idx)}
+
+
+        const updateDoc = {
+            $set: {
+              status:status
+            },
+          };
+
+          const result = await transectioncollection.updateOne(filter, updateDoc);
+
+          res.send(result)
+
+
+
+        
+
+      })
+
+
+      app.get("/transection/:email",async(req,res)=>{
+
+        let email=req.params.email
+
+        let filter={email}
+
+        let result=await transectioncollection.find(filter).toArray()
+        res.send(result)
+      })
+
+      app.post("/transactions",async(req,res)=>{
+
+        let transectionData=req.body
+
+        const result = await transectioncollection.insertOne(transectionData);
+        res.send(result)
+
+
+      })
+
       app.delete("/users/:id",async(req,res)=>{
 
         let idx=req.params.id
@@ -146,7 +214,7 @@ async function run() {
       app.patch("/users/:id",async(req,res)=>{
 
         let {role}=req.body
-        console.log(role)
+        // console.log(role)
 
         let idx=req.params.id
         let filter={_id:new ObjectId(idx)}
@@ -196,7 +264,7 @@ async function run() {
      app.post("/users",async(req,res)=>{
 
         let users=req.body;
-        console.log(users)
+        // console.log(users)
         let email=users?.email
         let query= {email}
   
