@@ -46,9 +46,10 @@ async function run() {
      app.patch("/revenue/:id",async(req,res)=>{
 
         let updateRevenueData=req.body
+        // console.log(updateRevenueData)
 
         // console.log(updateRevenueData)
-        let idx=req.params.idx
+        let idx=req.params.id
         // console.log(idx)
 
 
