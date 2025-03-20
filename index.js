@@ -43,6 +43,17 @@ async function run() {
 
 
 
+     app.get("/revenue/:email",async(req,res)=>{
+
+      let email=req.params.email
+
+        let filter={email}
+
+        let result=await revenuecollection.find(filter).toArray()
+        res.send(result)
+   })
+
+
      app.patch("/revenue/:id",async(req,res)=>{
 
         let updateRevenueData=req.body
