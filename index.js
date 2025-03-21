@@ -40,6 +40,26 @@ async function run() {
      const usercollection = database.collection("users");
      const revenuecollection = database.collection("revenue");
      const transectioncollection = database.collection("transection");
+     const feedback = database.collection("feedback");
+
+
+     app.get("/allfeedback",async(req,res)=>{
+
+      let result=await feedback.find().toArray()
+
+      res.send(result)
+     })
+
+     app.post("/addfeedback",async(req,res)=>{
+
+      let feedbackData=req.body
+
+      const result = await feedback.insertOne(feedbackData);
+      res.send(result)
+
+
+     })
+
 
 
 
